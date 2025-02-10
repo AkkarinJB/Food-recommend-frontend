@@ -9,11 +9,16 @@ function App() {
 
   const fetchImage = async (query) => {
     try {
-      const accessKey = "bt1b4PZAlNUuDgbw1PMhUX1_OnUuC6mZtYiJdX3YlYk"; //API Key
+      console.log("Fetching image for:", query); // ✅ Debug ชื่ออาหารที่ส่งไป
+  
+      const accessKey = "bt1b4PZAlNUuDgbw1PMhUX1_OnUuC6mZtYiJdX3YlYk"; // API Key
       const response = await fetch(
         `https://api.unsplash.com/search/photos?query=${query}&client_id=${accessKey}`
       );
       const data = await response.json();
+  
+      console.log("Unsplash API response:", data.results); // ✅ Debug ผลลัพธ์ที่ได้จาก Unsplash
+  
       return data.results.length > 0 ? data.results[0].urls.small : null;
     } catch (error) {
       console.error("Error fetching image:", error);
@@ -23,36 +28,43 @@ function App() {
 
   const fetchRecommendations = async (data) => {
     try {
-        setLoading(true);
-        setError(null);
-        setResults([]);
-
-        console.log("Sending data:", JSON.stringify(data));  // ✅ Debug JSON ก่อนส่ง
-
-        const response = await fetch("https://fast-api-production-e150.up.railway.app/recommend", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        });
-
-        if (!response.ok) {
-            const errorMessage = await response.text();
-            throw new Error(`Failed to fetch recommendations: ${errorMessage}`);
-        }
-
-        const result = await response.json();
-        console.log("Received recommendations:", result);
-        setResults(result.recommended_foods);
+      setLoading(true);
+      setError(null);
+      setResults([]);
+  
+      console.log("Sending data:", data);
+  
+      const response = await fetch("https://fast-api-production-e150.up.railway.app/recommend", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to fetch recommendations");
+      }
+  
+      const result = await response.json();
+      console.log("Received recommendations:", result);
+  
+      // ✅ เพิ่มภาพลงไปในผลลัพธ์
+      const enrichedResults = await Promise.all(
+        result.recommended_foods.map(async (item) => {
+          const imageUrl = await fetchImage(item["Food Name"]); // ✅ ใช้ชื่ออาหารเพื่อหาภาพ
+          return { ...item, imageUrl };
+        })
+      );
+  
+      setResults(enrichedResults);
     } catch (error) {
-        console.error("Error fetching recommendations:", error);
-        setError(error.message);
+      console.error("Error fetching recommendations:", error);
+      setError("Failed to fetch recommendations");
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
-
+  };
   return (
     <div className="p-8 max-w-2xl mx-auto">
       <FoodForm onRecommend={fetchRecommendations} />
