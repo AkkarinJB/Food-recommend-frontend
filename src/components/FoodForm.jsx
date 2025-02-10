@@ -19,8 +19,8 @@ const FoodForm = ({ onRecommend }) => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form Data:", formData); // Debug
-    onRecommend(formData);
+    console.log("Form Data:", formData);
+    fetchRecommendations(formData); 
   };
  
 

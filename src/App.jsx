@@ -22,31 +22,44 @@ function App() {
   };
 
   const fetchRecommendations = async (data) => {
-    try {
-      setLoading(true);
-      setError(null);
-      setResults([]);
+  try {
+    setLoading(true);
+    setError(null);
+    setResults([]);
 
-      console.log("Sending data:", data);
-      const response = await fetch(`${import.meta.env.VITE_API_URL}recommend`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+    console.log("Sending data:", data);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+    const fetchRecommendations = async (data) => {
+      try {
+        setLoading(true);
+        setError(null);
+        setResults([]);
+    
+        console.log("Sending data:", data);
+    
+        const response = await fetch("https://fast-api-production-e150.up.railway.app/recommend", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+    
+        if (!response.ok) {
+          throw new Error("Failed to fetch recommendations");
+        }
+    
+        const result = await response.json();
+        console.log("Received recommendations:", result);
+        
+        setResults(result.recommended_foods);
+      } catch (error) {
+        console.error("Error fetching recommendations:", error);
+        setError("Failed to fetch recommendations");
+      } finally {
+        setLoading(false);
       }
-
-      const result = await response.json();
-      console.log("Received data:", result);
-
-      if (!result || !Array.isArray(result.recommended_foods)) {
-        throw new Error(
-          "Invalid API response: recommended_foods is not an array"
-        );
-      }
-
+    };
       // ค้นหารูปภาพอาหารแต่ละรายการ
       const enrichedResults = await Promise.all(
         result.recommended_foods.map(async (item) => ({
