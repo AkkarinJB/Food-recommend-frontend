@@ -10,16 +10,21 @@ function App() {
   const fetchImage = async (query) => {
     try {
       console.log("Fetching image for:", query); // ✅ Debug ชื่ออาหารที่ส่งไป
-  
+    
       const accessKey = "bt1b4PZAlNUuDgbw1PMhUX1_OnUuC6mZtYiJdX3YlYk"; // API Key
       const response = await fetch(
         `https://api.unsplash.com/search/photos?query=${query}&client_id=${accessKey}`
       );
       const data = await response.json();
+    
+      console.log("Unsplash API response for", query, ":", data); // ✅ Debug ผลลัพธ์ที่ได้จาก Unsplash
   
-      console.log("Unsplash API response:", data.results); // ✅ Debug ผลลัพธ์ที่ได้จาก Unsplash
+      if (!data.results || data.results.length === 0) {
+        console.warn(`No image found for "${query}"`);
+        return null;  // ✅ แสดงข้อความเตือนถ้าไม่มีรูป
+      }
   
-      return data.results.length > 0 ? data.results[0].urls.small : null;
+      return data.results[0].urls.small;
     } catch (error) {
       console.error("Error fetching image:", error);
       return null;
