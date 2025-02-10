@@ -23,42 +23,35 @@ function App() {
 
   const fetchRecommendations = async (data) => {
     try {
-      setLoading(true);
-      setError(null);
-      setResults([]);
+        setLoading(true);
+        setError(null);
+        setResults([]);
 
-      console.log("Sending data:", data);
+        console.log("Sending data:", JSON.stringify(data));  // ✅ Debug JSON ก่อนส่ง
 
-      const response = await fetch("https://fast-api-production-e150.up.railway.app/recommend", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+        const response = await fetch("https://fast-api-production-e150.up.railway.app/recommend", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch recommendations");
-      }
+        if (!response.ok) {
+            const errorMessage = await response.text();
+            throw new Error(`Failed to fetch recommendations: ${errorMessage}`);
+        }
 
-      const result = await response.json();
-      console.log("Received recommendations:", result);
-      
-      const enrichedResults = await Promise.all(
-        result.recommended_foods.map(async (item) => ({
-          ...item,
-          imageUrl: await fetchImage(item["Food Name"]),
-        }))
-      );
-
-      setResults(enrichedResults);
+        const result = await response.json();
+        console.log("Received recommendations:", result);
+        setResults(result.recommended_foods);
     } catch (error) {
-      console.error("Error fetching recommendations:", error);
-      setError(error.message);
+        console.error("Error fetching recommendations:", error);
+        setError(error.message);
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
 
   return (
     <div className="p-8 max-w-2xl mx-auto">
