@@ -36,9 +36,9 @@ function App() {
       setLoading(true);
       setError(null);
       setResults([]);
-  
+    
       console.log("Sending data:", data);
-  
+    
       const response = await fetch("https://fast-api-production-e150.up.railway.app/recommend", {
         method: "POST",
         headers: {
@@ -46,22 +46,35 @@ function App() {
         },
         body: JSON.stringify(data),
       });
-  
+    
       if (!response.ok) {
         throw new Error("Failed to fetch recommendations");
       }
-  
+    
       const result = await response.json();
       console.log("Received recommendations:", result);
+    
+      if (!result.recommended_foods || result.recommended_foods.length === 0) {
+        console.warn("No recommended foods found.");
+        setResults([]);
+        return;
+      }
+  
+      console.log("Fetching images for:", result.recommended_foods.map(f => f["Food Name"]));
   
       // ✅ เพิ่มภาพลงไปในผลลัพธ์
       const enrichedResults = await Promise.all(
         result.recommended_foods.map(async (item) => {
+          if (!item["Food Name"]) {
+            console.warn("Food Name is missing in:", item);
+            return { ...item, imageUrl: null };
+          }
+  
           const imageUrl = await fetchImage(item["Food Name"]); // ✅ ใช้ชื่ออาหารเพื่อหาภาพ
           return { ...item, imageUrl };
         })
       );
-  
+    
       setResults(enrichedResults);
     } catch (error) {
       console.error("Error fetching recommendations:", error);
