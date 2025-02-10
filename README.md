@@ -23,7 +23,8 @@ Frontend พัฒนาโดยใช้ *React + Vite* และ *Tailwind CS
 
 ---
 
-## 👤 *โครงสร้างโปรเจค*
+### 📂 **โครงสร้างโปรเจค**
+```sh
 frontend/
 ├── public/
 │   ├── favicon.ico
@@ -39,7 +40,7 @@ frontend/
 ├── package.json
 ├── vite.config.js
 ├── README.md
----
+
 
 ## ⚙️ *การติดตั้งและใช้งาน*
 ### 🚀 *1. Clone Repo*
