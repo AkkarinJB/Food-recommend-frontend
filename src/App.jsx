@@ -28,7 +28,7 @@ function App() {
       setResults([]);
 
       console.log("Sending data:", data);
-      const response = await fetch(`${import.meta.env.VITE_API_URL}recommend/`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
