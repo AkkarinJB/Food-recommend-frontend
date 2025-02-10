@@ -76,7 +76,7 @@ vercel --prod
 ## 📸 *ตัวอย่าง UI*
 | 📌 แบบฟอร์มกรอกข้อมูล | 📌 รายการอาหารแนะนำ |
 |----------------------|----------------------|
-| ![Form](https://i.imgur.com/example1.png) | ![Recommendations](https://i.imgur.com/example2.png) |
+| ![Form](./images/Home.png) | ![Recommendations](./images/Result.png) |
 
 ---
 
