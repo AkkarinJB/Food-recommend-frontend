@@ -17,12 +17,21 @@ const FoodForm = ({ onRecommend }) => {
       [e.target.name]: e.target.value,
     });
   };
+  onRecommend({
+    ...formData,
+    age: Number(formData.age),
+    weight: Number(formData.weight),
+    height: Number(formData.height),
+    carbohydrates: Number(formData.carbohydrates),
+    protein: Number(formData.protein),
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form Data:", formData); // Debug
     onRecommend(formData);
   };
+  console.log(JSON.stringify(formData))
 
   return (
     <form
