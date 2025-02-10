@@ -8,6 +8,7 @@ const FoodForm = ({ onRecommend }) => {
     activity_level: "moderate",
     carbohydrates: "",
     protein: "",
+    calories: "",
     recommendations: 5,
   });
 
@@ -19,8 +20,30 @@ const FoodForm = ({ onRecommend }) => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form Data:", formData);
-    onRecommend(formData);  // ✅ เปลี่ยนจาก fetchRecommendations เป็น onRecommend
+  
+    // คำนวณ BMR
+    const bmr =
+      formData.gender === "male"
+        ? 10 * formData.weight + 6.25 * formData.height - 5 * formData.age + 5
+        : 10 * formData.weight + 6.25 * formData.height - 5 * formData.age - 161;
+  
+    // คำนวณ TDEE ตาม activity level
+    const activityMultipliers = {
+      sedentary: 1.2,
+      light: 1.375,
+      moderate: 1.55,
+      active: 1.725,
+      very_active: 1.9,
+    };
+  
+    const calories = Math.round(bmr * activityMultipliers[formData.activity_level]);
+  
+    console.log("Calculated Calories:", calories);
+  
+    const updatedFormData = { ...formData, calories };  // ✅ ใส่ค่า calories ลงไป
+  
+    console.log("Form Data:", updatedFormData);
+    onRecommend(updatedFormData);  // ✅ ส่งค่าไปที่ API
   };
  
 
