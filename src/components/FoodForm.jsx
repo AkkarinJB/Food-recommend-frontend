@@ -35,20 +35,20 @@ const FoodForm = ({ onRecommend }) => {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-gray-600 text-sm font-medium">Age</label>
+          <label className="block text-gray-600 text-sm font-medium">อายุ</label>
           <input
             type="number"
             name="age"
             value={formData.age}
             onChange={handleChange}
-            placeholder="Enter your age"
+            placeholder="กรอกอายุของคุณ"
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
         </div>
 
         <div>
           <label className="block text-gray-600 text-sm font-medium">
-            Gender
+            เพศ
           </label>
           <select
             name="gender"
@@ -56,42 +56,42 @@ const FoodForm = ({ onRecommend }) => {
             onChange={handleChange}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
           >
-            <option value="male">Male</option>
-            <option value="female">Female</option>
+            <option value="male">ชาย</option>
+            <option value="female">หญิง</option>
           </select>
         </div>
 
         <div>
           <label className="block text-gray-600 text-sm font-medium">
-            Weight (kg)
+            น้ำหนัก (kg)
           </label>
           <input
             type="number"
             name="weight"
             value={formData.weight}
             onChange={handleChange}
-            placeholder="Enter your weight"
+            placeholder="กรอกน้ำหนักของคุณ"
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
         </div>
 
         <div>
           <label className="block text-gray-600 text-sm font-medium">
-            Height (cm)
+            ส่วนสูง (cm)
           </label>
           <input
             type="number"
             name="height"
             value={formData.height}
             onChange={handleChange}
-            placeholder="Enter your height"
+            placeholder="กรอกส่วนสูงของคุณ"
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
         </div>
 
         <div className="col-span-2">
           <label className="block text-gray-600 text-sm font-medium">
-            Activity Level
+            การออกกำลังกาย
           </label>
           <select
             name="activity_level"
@@ -99,38 +99,38 @@ const FoodForm = ({ onRecommend }) => {
             onChange={handleChange}
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
           >
-            <option value="sedentary">Sedentary</option>
-            <option value="light">Light</option>
-            <option value="moderate">Moderate</option>
-            <option value="active">Active</option>
-            <option value="very active">Very Active</option>
+            <option value="sedentary">ไม่ออกกำลังกายเลย</option>
+            <option value="light">ออกกำลังกายเล็กน้อย (1-3 วัน/สัปดาห์)</option>
+            <option value="moderate">ออกกำลังกายปานกลาง (3-5 วัน/สัปดาห์)</option>
+            <option value="active">ออกกำลังกายหนัก (6-7 วัน/สัปดาห์)</option>
+            <option value="very active">นักกีฬา ออกกำลังกายหนักมาก</option>
           </select>
         </div>
 
         <div>
           <label className="block text-gray-600 text-sm font-medium">
-            Carbohydrates (g)
+            คาโบไฮเดรด(g)
           </label>
           <input
             type="number"
             name="carbohydrates"
             value={formData.carbohydrates}
             onChange={handleChange}
-            placeholder="Enter carbs amount"
+            placeholder="ปริมาณคาโบไฮเดรดที่ร่างกายต้องการเเต่ละวัน"
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
         </div>
 
         <div>
           <label className="block text-gray-600 text-sm font-medium">
-            Protein (g)
+            โปรตีน (g)
           </label>
           <input
             type="number"
             name="protein"
             value={formData.protein}
             onChange={handleChange}
-            placeholder="Enter protein amount"
+            placeholder="ปริมาณโปรตีนที่ร่างกายต้องการเเต่ละวัน"
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
         </div>
