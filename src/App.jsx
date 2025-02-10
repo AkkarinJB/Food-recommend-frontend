@@ -1,6 +1,7 @@
 import { useState } from "react";
 import FoodForm from "./components/FoodForm";
 import "./index.css";
+
 function App() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -13,7 +14,6 @@ function App() {
         `https://api.unsplash.com/search/photos?query=${query}&client_id=${accessKey}`
       );
       const data = await response.json();
-
       return data.results.length > 0 ? data.results[0].urls.small : null;
     } catch (error) {
       console.error("Error fetching image:", error);
@@ -22,45 +22,28 @@ function App() {
   };
 
   const fetchRecommendations = async (data) => {
-  try {
-    setLoading(true);
-    setError(null);
-    setResults([]);
+    try {
+      setLoading(true);
+      setError(null);
+      setResults([]);
 
-    console.log("Sending data:", data);
+      console.log("Sending data:", data);
 
-    const fetchRecommendations = async (data) => {
-      try {
-        setLoading(true);
-        setError(null);
-        setResults([]);
-    
-        console.log("Sending data:", data);
-    
-        const response = await fetch("https://fast-api-production-e150.up.railway.app/recommend", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
-    
-        if (!response.ok) {
-          throw new Error("Failed to fetch recommendations");
-        }
-    
-        const result = await response.json();
-        console.log("Received recommendations:", result);
-        
-        setResults(result.recommended_foods);
-      } catch (error) {
-        console.error("Error fetching recommendations:", error);
-        setError("Failed to fetch recommendations");
-      } finally {
-        setLoading(false);
+      const response = await fetch("https://fast-api-production-e150.up.railway.app/recommend", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch recommendations");
       }
-    };
-      // ค้นหารูปภาพอาหารแต่ละรายการ
+
+      const result = await response.json();
+      console.log("Received recommendations:", result);
+      
       const enrichedResults = await Promise.all(
         result.recommended_foods.map(async (item) => ({
           ...item,
@@ -80,62 +63,31 @@ function App() {
   return (
     <div className="p-8 max-w-2xl mx-auto">
       <FoodForm onRecommend={fetchRecommendations} />
-
-      {/* แสดง Loader ขณะรอผลลัพธ์ */}
-      {loading && (
-        <p className="text-blue-500 text-center mt-4">
-          Loading recommendations...
-        </p>
-      )}
-
-      {/*Error */}
+      {loading && <p className="text-blue-500 text-center mt-4">Loading recommendations...</p>}
       {error && <p className="text-red-500 text-center mt-4">{error}</p>}
-
-      {/* แสดงผลลัพธ์พร้อมรูป*/}
       {Array.isArray(results) && results.length > 0 && (
         <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
           {results.map((item, index) => (
-            <div
-              key={index}
-              className="p-4 bg-white rounded-lg shadow-lg border border-gray-200"
-            >
+            <div key={index} className="p-4 bg-white rounded-lg shadow-lg border border-gray-200">
               {item.imageUrl ? (
-                <img
-                  src={item.imageUrl}
-                  alt={item["Food Name"]}
-                  className="w-full h-32 object-cover rounded-lg"
-                />
+                <img src={item.imageUrl} alt={item["Food Name"]} className="w-full h-32 object-cover rounded-lg" />
               ) : (
                 <div className="w-full h-32 bg-gray-200 flex items-center justify-center rounded-lg">
                   <span className="text-gray-500">No Image</span>
                 </div>
               )}
-              <h2 className="text-lg font-bold text-gray-800 mt-2">
-                {item["Food Name"]}
-              </h2>
-              <p className="text-gray-600 text-sm">
-                Glycemic Index:{" "}
-                <span className="font-semibold">
-                  {parseFloat(item["Glycemic Index"]).toFixed(2)}
-                </span>
-              </p>
+              <h2 className="text-lg font-bold text-gray-800 mt-2">{item["Food Name"]}</h2>
+              <p className="text-gray-600 text-sm">Glycemic Index: <span className="font-semibold">{parseFloat(item["Glycemic Index"]).toFixed(2)}</span></p>
             </div>
           ))}
         </div>
       )}
       {!loading && !error && results.length === 0 && (
-        <p className="text-gray-500 text-center mt-4">
-          No recommendations available.
-        </p>
+        <p className="text-gray-500 text-center mt-4">No recommendations available.</p>
       )}
       <div className="w-full flex justify-center mt-6">
         <button
-          onClick={() =>
-            window.open(
-              "https://hub.2i2c-bare.mybinder.org/user/akkarinjb-notebook-food-recommen-jzkr4wc9/lab/tree/model3_matrix.ipynb",
-              "_blank"
-            )
-          }
+          onClick={() => window.open("https://hub.2i2c-bare.mybinder.org/user/akkarinjb-notebook-food-recommen-jzkr4wc9/lab/tree/model3_matrix.ipynb", "_blank")}
           className="px-6 py-3 bg-amber-500 text-white rounded-lg hover:bg-slate-900 transition shadow-md"
         >
           About Model
