@@ -92,19 +92,6 @@ vercel --prod
 
 ---
 
-## 🤖 *ปุ่ม "About Model"*
-📌 ปุ่ม About Model เชื่อมไปที่ *Jupyter Notebook บน Binder*  
-<button
-  onClick={() =>
-    window.open(
-      "https://hub.2i2c-bare.mybinder.org/user/akkarinjb-notebook-food-recommen-jzkr4wc9/lab/tree/model3_matrix.ipynb",
-      "_blank"
-    )
-  }
-  className="px-6 py-3 bg-amber-500 text-white rounded-lg hover:bg-slate-900 transition shadow-md"
->
-  About Model
-</button>
 
 ---
 
