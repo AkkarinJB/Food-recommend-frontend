@@ -11,7 +11,6 @@ const FoodForm = ({ onRecommend }) => {
     calories: "",
     recommendations: 5,
   });
-  const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     setFormData({
@@ -19,27 +18,15 @@ const FoodForm = ({ onRecommend }) => {
       [e.target.name]: e.target.value,
     });
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // แปลงค่าทั้งหมดเป็นตัวเลข
-    const age = parseFloat(formData.age) || 0;
-    const weight = parseFloat(formData.weight) || 0;
-    const height = parseFloat(formData.height) || 0;
-
-    if (!age || !weight || !height) {
-      setError("กรุณากรอกข้อมูลให้ครบถ้วน");
-      return;
-    }
-    setError(null); // ล้าง error ถ้ากรอกครบ
-
+  
     // คำนวณ BMR
     const bmr =
       formData.gender === "male"
-        ? 10 * weight + 6.25 * height - 5 * age + 5
-        : 10 * weight + 6.25 * height - 5 * age - 161;
-
+        ? 10 * formData.weight + 6.25 * formData.height - 5 * formData.age + 5
+        : 10 * formData.weight + 6.25 * formData.height - 5 * formData.age - 161;
+  
     // คำนวณ TDEE ตาม activity level
     const activityMultipliers = {
       sedentary: 1.2,
@@ -48,14 +35,17 @@ const FoodForm = ({ onRecommend }) => {
       active: 1.725,
       very_active: 1.9,
     };
-
+  
     const calories = Math.round(bmr * activityMultipliers[formData.activity_level]);
-    console.log("✅ Calculated Calories:", calories);
-
-    const updatedFormData = { ...formData, calories };
-    console.log("📤 Sending Data:", updatedFormData);
-    onRecommend(updatedFormData);
+  
+    console.log("Calculated Calories:", calories);
+  
+    const updatedFormData = { ...formData, calories };  // ✅ ใส่ค่า calories ลงไป
+  
+    console.log("Form Data:", updatedFormData);
+    onRecommend(updatedFormData);  // ✅ ส่งค่าไปที่ API
   };
+ 
 
   return (
     <form
@@ -136,8 +126,36 @@ const FoodForm = ({ onRecommend }) => {
             <option value="light">ออกกำลังกายเล็กน้อย (1-3 วัน/สัปดาห์)</option>
             <option value="moderate">ออกกำลังกายปานกลาง (3-5 วัน/สัปดาห์)</option>
             <option value="active">ออกกำลังกายหนัก (6-7 วัน/สัปดาห์)</option>
-            <option value="very_active">นักกีฬา ออกกำลังกายหนักมาก</option>
+            <option value="very active">นักกีฬา ออกกำลังกายหนักมาก</option>
           </select>
+        </div>
+
+        <div>
+          <label className="block text-gray-600 text-sm font-medium">
+            คาโบไฮเดรด(g)
+          </label>
+          <input
+            type="number"
+            name="carbohydrates"
+            value={formData.carbohydrates}
+            onChange={handleChange}
+            placeholder="ปริมาณคาโบไฮเดรดที่ร่างกายต้องการเเต่ละวัน"
+            className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          />
+        </div>
+
+        <div>
+          <label className="block text-gray-600 text-sm font-medium">
+            โปรตีน (g)
+          </label>
+          <input
+            type="number"
+            name="protein"
+            value={formData.protein}
+            onChange={handleChange}
+            placeholder="ปริมาณโปรตีนที่ร่างกายต้องการเเต่ละวัน"
+            className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          />
         </div>
       </div>
 
