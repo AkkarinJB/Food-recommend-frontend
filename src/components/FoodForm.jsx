@@ -9,7 +9,7 @@ const FoodForm = ({ onRecommend }) => {
     carbohydrates: "",
     protein: "",
     calories: "",
-    recommendations: 5,
+    recommendations: 6,
   });
 
   const handleChange = (e) => {
