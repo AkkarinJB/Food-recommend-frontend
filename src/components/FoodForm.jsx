@@ -8,12 +8,9 @@ const FoodForm = ({ onRecommend }) => {
     activity_level: "moderate",
     carbohydrates: "",
     protein: "",
-    fat: "", 
-    fiber_content: "", 
     calories: "",
     recommendations: 5,
   });
-  const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     setFormData({
@@ -21,24 +18,16 @@ const FoodForm = ({ onRecommend }) => {
       [e.target.name]: e.target.value,
     });
   };
-
-  const handleSubmit = async (e) => {
+  
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Validation
-    if (!formData.age || !formData.weight || !formData.height || !formData.calories ||
-        !formData.carbohydrates || !formData.protein || !formData.fat || !formData.fiber_content) {
-      setError("กรุณากรอกข้อมูลให้ครบถ้วน");
-      return;
-    }
-    setError(null); // ล้าง error ถ้ากรอกครบ
-
+  
     // คำนวณ BMR
     const bmr =
       formData.gender === "male"
         ? 10 * parseFloat(formData.weight) + 6.25 * parseFloat(formData.height) - 5 * parseFloat(formData.age) + 5
         : 10 * parseFloat(formData.weight) + 6.25 * parseFloat(formData.height) - 5 * parseFloat(formData.age) - 161;
-
+  
     // คำนวณ TDEE ตาม activity level
     const activityMultipliers = {
       sedentary: 1.2,
@@ -47,53 +36,115 @@ const FoodForm = ({ onRecommend }) => {
       active: 1.725,
       very_active: 1.9,
     };
-
+  
     const calories = Math.round(bmr * activityMultipliers[formData.activity_level]);
-    console.log("Estimated TDEE:", calories);
-
-    // Prepare Data for API
-    const requestData = {
-      calories: parseFloat(formData.calories),
+  
+    console.log("Calculated Calories:", calories);
+  
+    const updatedFormData = { 
+      ...formData, 
+      age: parseFloat(formData.age),
+      weight: parseFloat(formData.weight),
+      height: parseFloat(formData.height),
       carbohydrates: parseFloat(formData.carbohydrates),
       protein: parseFloat(formData.protein),
-      fat: parseFloat(formData.fat),
-      fiber_content: parseFloat(formData.fiber_content)
-    };
-
-    console.log("📤 Sending Data:", requestData);
-
-    try {
-      const response = await fetch("https://fast-api-production-e150.up.railway.app/recommend", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestData),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch recommendations. Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log("✅ Received recommendations:", data);
-      onRecommend(data.recommended_foods);
-    } catch (error) {
-      console.error("❌ Error fetching recommendations:", error);
-      setError("ไม่สามารถรับคำแนะนำได้ กรุณาลองใหม่");
-    }
+      calories: parseFloat(calories)
+    };  // ✅ ใส่ค่า calories และแปลงค่าทั้งหมดเป็นตัวเลข
+  
+    console.log("Form Data:", updatedFormData);
+    onRecommend(updatedFormData);  // ✅ ส่งค่าไปที่ API
   };
-
+ 
   return (
-    <form onSubmit={handleSubmit}>
-      {error && <div className="alert">{error}</div>}
-      <input type="number" name="age" placeholder="Age" onChange={handleChange} />
-      <input type="number" name="weight" placeholder="Weight (kg)" onChange={handleChange} />
-      <input type="number" name="height" placeholder="Height (cm)" onChange={handleChange} />
-      <input type="number" name="calories" placeholder="Calories" onChange={handleChange} />
-      <input type="number" name="carbohydrates" placeholder="Carbohydrates (g)" onChange={handleChange} />
-      <input type="number" name="protein" placeholder="Protein (g)" onChange={handleChange} />
-      <input type="number" name="fat" placeholder="Fat (g)" onChange={handleChange} />
-      <input type="number" name="fiber_content" placeholder="Fiber Content (g)" onChange={handleChange} />
-      <button type="submit">Submit</button>
+    <form
+      className="p-6 bg-white rounded-xl shadow-lg max-w-lg mx-auto space-y-6"
+      onSubmit={handleSubmit}
+    >
+      <h2 className="text-2xl font-semibold text-gray-700 text-center">
+        Food Recommendation KNN Model
+      </h2>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-gray-600 text-sm font-medium">อายุ</label>
+          <input
+            type="number"
+            name="age"
+            value={formData.age}
+            onChange={handleChange}
+            placeholder="กรอกอายุของคุณ"
+            className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          />
+        </div>
+
+        <div>
+          <label className="block text-gray-600 text-sm font-medium">
+            เพศ
+          </label>
+          <select
+            name="gender"
+            value={formData.gender}
+            onChange={handleChange}
+            className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          >
+            <option value="male">ชาย</option>
+            <option value="female">หญิง</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-gray-600 text-sm font-medium">
+            น้ำหนัก (kg)
+          </label>
+          <input
+            type="number"
+            name="weight"
+            value={formData.weight}
+            onChange={handleChange}
+            placeholder="กรอกน้ำหนักของคุณ"
+            className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          />
+        </div>
+
+        <div>
+          <label className="block text-gray-600 text-sm font-medium">
+            ส่วนสูง (cm)
+          </label>
+          <input
+            type="number"
+            name="height"
+            value={formData.height}
+            onChange={handleChange}
+            placeholder="กรอกส่วนสูงของคุณ"
+            className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          />
+        </div>
+
+        <div className="col-span-2">
+          <label className="block text-gray-600 text-sm font-medium">
+            การออกกำลังกาย
+          </label>
+          <select
+            name="activity_level"
+            value={formData.activity_level}
+            onChange={handleChange}
+            className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          >
+            <option value="sedentary">ไม่ออกกำลังกายเลย</option>
+            <option value="light">ออกกำลังกายเล็กน้อย (1-3 วัน/สัปดาห์)</option>
+            <option value="moderate">ออกกำลังกายปานกลาง (3-5 วัน/สัปดาห์)</option>
+            <option value="active">ออกกำลังกายหนัก (6-7 วัน/สัปดาห์)</option>
+            <option value="very_active">นักกีฬา ออกกำลังกายหนักมาก</option>
+          </select>
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-all"
+      >
+        เเนะนำอาหาร
+      </button>
     </form>
   );
 };
