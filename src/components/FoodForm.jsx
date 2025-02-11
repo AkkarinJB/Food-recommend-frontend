@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 const FoodForm = ({ onRecommend }) => {
   const [formData, setFormData] = useState({
     age: "",
@@ -9,8 +8,6 @@ const FoodForm = ({ onRecommend }) => {
     activity_level: "moderate",
     carbohydrates: "",
     protein: "",
-    fat: "", // เพิ่ม fat
-    fiber_content: "", // เพิ่ม fiber_content
     calories: "",
     recommendations: 5,
   });
@@ -21,16 +18,15 @@ const FoodForm = ({ onRecommend }) => {
       [e.target.name]: e.target.value,
     });
   };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+  
     // คำนวณ BMR
     const bmr =
       formData.gender === "male"
         ? 10 * formData.weight + 6.25 * formData.height - 5 * formData.age + 5
         : 10 * formData.weight + 6.25 * formData.height - 5 * formData.age - 161;
-    
+  
     // คำนวณ TDEE ตาม activity level
     const activityMultipliers = {
       sedentary: 1.2,
@@ -39,23 +35,18 @@ const FoodForm = ({ onRecommend }) => {
       active: 1.725,
       very_active: 1.9,
     };
-
+  
     const calories = Math.round(bmr * activityMultipliers[formData.activity_level]);
-    
+  
     console.log("Calculated Calories:", calories);
-    
-    // อัปเดตค่า formData พร้อมค่าที่จำเป็นทั้งหมด
-    const updatedFormData = { 
-      ...formData, 
-      calories, 
-      fat: parseFloat(formData.fat) || 0, 
-      fiber_content: parseFloat(formData.fiber_content) || 0 
-    };
-
+  
+    const updatedFormData = { ...formData, calories };  // ✅ ใส่ค่า calories ลงไป
+  
     console.log("Form Data:", updatedFormData);
-    onRecommend(updatedFormData);
+    onRecommend(updatedFormData);  // ✅ ส่งค่าไปที่ API
   };
  
+
   return (
     <form
       className="p-6 bg-white rounded-xl shadow-lg max-w-lg mx-auto space-y-6"
@@ -79,7 +70,9 @@ const FoodForm = ({ onRecommend }) => {
         </div>
 
         <div>
-          <label className="block text-gray-600 text-sm font-medium">เพศ</label>
+          <label className="block text-gray-600 text-sm font-medium">
+            เพศ
+          </label>
           <select
             name="gender"
             value={formData.gender}
@@ -92,7 +85,9 @@ const FoodForm = ({ onRecommend }) => {
         </div>
 
         <div>
-          <label className="block text-gray-600 text-sm font-medium">น้ำหนัก (kg)</label>
+          <label className="block text-gray-600 text-sm font-medium">
+            น้ำหนัก (kg)
+          </label>
           <input
             type="number"
             name="weight"
@@ -104,7 +99,9 @@ const FoodForm = ({ onRecommend }) => {
         </div>
 
         <div>
-          <label className="block text-gray-600 text-sm font-medium">ส่วนสูง (cm)</label>
+          <label className="block text-gray-600 text-sm font-medium">
+            ส่วนสูง (cm)
+          </label>
           <input
             type="number"
             name="height"
@@ -116,7 +113,9 @@ const FoodForm = ({ onRecommend }) => {
         </div>
 
         <div className="col-span-2">
-          <label className="block text-gray-600 text-sm font-medium">การออกกำลังกาย</label>
+          <label className="block text-gray-600 text-sm font-medium">
+            การออกกำลังกาย
+          </label>
           <select
             name="activity_level"
             value={formData.activity_level}
@@ -127,54 +126,34 @@ const FoodForm = ({ onRecommend }) => {
             <option value="light">ออกกำลังกายเล็กน้อย (1-3 วัน/สัปดาห์)</option>
             <option value="moderate">ออกกำลังกายปานกลาง (3-5 วัน/สัปดาห์)</option>
             <option value="active">ออกกำลังกายหนัก (6-7 วัน/สัปดาห์)</option>
-            <option value="very_active">นักกีฬา ออกกำลังกายหนักมาก</option>
+            <option value="very active">นักกีฬา ออกกำลังกายหนักมาก</option>
           </select>
         </div>
 
         <div>
-          <label className="block text-gray-600 text-sm font-medium">คาร์โบไฮเดรต (g)</label>
+          <label className="block text-gray-600 text-sm font-medium">
+            คาโบไฮเดรด(g)
+          </label>
           <input
             type="number"
             name="carbohydrates"
             value={formData.carbohydrates}
             onChange={handleChange}
-            placeholder="ปริมาณคาร์โบไฮเดรตที่ต้องการ"
+            placeholder="ปริมาณคาโบไฮเดรดที่ร่างกายต้องการเเต่ละวัน"
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
         </div>
 
         <div>
-          <label className="block text-gray-600 text-sm font-medium">โปรตีน (g)</label>
+          <label className="block text-gray-600 text-sm font-medium">
+            โปรตีน (g)
+          </label>
           <input
             type="number"
             name="protein"
             value={formData.protein}
             onChange={handleChange}
-            placeholder="ปริมาณโปรตีนที่ต้องการ"
-            className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-          />
-        </div>
-
-        <div>
-          <label className="block text-gray-600 text-sm font-medium">ไขมัน (g)</label>
-          <input
-            type="number"
-            name="fat"
-            value={formData.fat}
-            onChange={handleChange}
-            placeholder="ปริมาณไขมันที่ต้องการ"
-            className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
-          />
-        </div>
-
-        <div>
-          <label className="block text-gray-600 text-sm font-medium">ใยอาหาร (g)</label>
-          <input
-            type="number"
-            name="fiber_content"
-            value={formData.fiber_content}
-            onChange={handleChange}
-            placeholder="ปริมาณใยอาหารที่ต้องการ"
+            placeholder="ปริมาณโปรตีนที่ร่างกายต้องการเเต่ละวัน"
             className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
         </div>
@@ -184,7 +163,7 @@ const FoodForm = ({ onRecommend }) => {
         type="submit"
         className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-all"
       >
-        แนะนำอาหาร
+        เเนะนำอาหาร
       </button>
     </form>
   );
