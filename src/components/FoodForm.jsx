@@ -170,4 +170,3 @@ const FoodForm = ({ onRecommend }) => {
 };
 
 export default FoodForm;
-ให้เป็นเเบบนี้อะครับ
