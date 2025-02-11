@@ -8,6 +8,8 @@ const FoodForm = ({ onRecommend }) => {
     activity_level: "moderate",
     carbohydrates: "",
     protein: "",
+    fat: "",    // เพิ่มตัวนี้
+    fiber_content: "",  // เพิ่มตัวนี้
     calories: "",
     recommendations: 5,
   });
