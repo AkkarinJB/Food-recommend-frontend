@@ -53,7 +53,7 @@ const FoodForm = ({ onRecommend }) => {
       onSubmit={handleSubmit}
     >
       <h2 className="text-2xl font-semibold text-gray-700 text-center">
-        Food Recommendation KNN Model
+        ระบบเเนะนำกลุ่มอาหารสำหรับผู้ป่วยเบาหวาน
       </h2>
 
       <div className="grid grid-cols-2 gap-4">
